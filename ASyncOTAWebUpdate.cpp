@@ -6,6 +6,13 @@
  */
 
 #include <ASyncOTAWebUpdate.h>
+#ifdef ESP32
+#include "SPIFFS.h"
+#endif
+
+#ifndef U_SPIFFS
+#define U_SPIFFS U_FS
+#endif
 
 ASyncOTAWebUpdate::~ASyncOTAWebUpdate() {
 }
@@ -28,10 +35,12 @@ void ASyncOTAWebUpdate::init(AsyncWebServer &server, const char *path, pUpdateFo
 }
 
 void ASyncOTAWebUpdate::printProgress(size_t prg, size_t sz) {
-	if (contentLen != 0) {
-		Serial.printf("Progress: %d%%\n", (prg*100)/contentLen);
-	} else {
-		Serial.printf("Progress: %d of %d\n", prg, sz);
+	if (_printProgress) {
+		if (contentLen != 0) {
+			Serial.printf("Progress: %d%%\n", (prg*100)/contentLen);
+		} else {
+			Serial.printf("Progress: %d of %d\n", prg, sz);
+		}
 	}
 }
 
@@ -59,7 +68,7 @@ void ASyncOTAWebUpdate::handleUpdateUpload(AsyncWebServerRequest *request, const
 	}
 
 	if (!index) {
-		Serial.println("update");
+		if (_printProgress) Serial.println("update");
 		contentLen = request->contentLength();
 		// if filename includes spiffs, update the spiffs partition
 		int cmd = U_FLASH;
@@ -68,7 +77,7 @@ void ASyncOTAWebUpdate::handleUpdateUpload(AsyncWebServerRequest *request, const
 			SPIFFS.end();
 		}
 
-		Serial.printf("Loading %s\n", filename.c_str());
+		if (_printProgress) Serial.printf("Loading %s\n", filename.c_str());
 
 #ifdef ESP8266
 		update.runAsync(true);
@@ -84,7 +93,7 @@ void ASyncOTAWebUpdate::handleUpdateUpload(AsyncWebServerRequest *request, const
 		update.printError(Serial);
 #ifdef ESP8266
 	} else {
-		Serial.printf("Progress: %d%%\n", (update.progress()*100)/update.size());
+		if (_printProgress) Serial.printf("Progress: %d%%\n", (update.progress()*100)/update.size());
 #endif
 	}
 
