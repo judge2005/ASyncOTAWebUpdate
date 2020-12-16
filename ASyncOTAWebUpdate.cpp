@@ -35,6 +35,9 @@ void ASyncOTAWebUpdate::init(AsyncWebServer &server, const char *path, pUpdateFo
 }
 
 void ASyncOTAWebUpdate::printProgress(size_t prg, size_t sz) {
+#ifdef ESP32
+	delay(1);
+#endif
 	if (_printProgress) {
 		if (contentLen != 0) {
 			Serial.printf("Progress: %d%%\n", (prg*100)/contentLen);
