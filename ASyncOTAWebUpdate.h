@@ -12,7 +12,7 @@
 #ifdef ESP32
 #include "Update.h"
 #else
-#include "Updater.h"
+#include <Updater.h>
 #define UpdateClass UpdaterClass
 #endif
 
@@ -31,7 +31,7 @@ public:
 
 private:
 	boolean _printProgress = false;
-	int contentLen;
+	size_t  contentLen;
 	void handleUpdateGet(AsyncWebServerRequest *request);
 	void handleUpdatePost(AsyncWebServerRequest *request);
 	void handleUpdateUpload(AsyncWebServerRequest *request, const String& filename, size_t index, uint8_t *data, size_t len, bool final);

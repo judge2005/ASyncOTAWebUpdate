@@ -8,6 +8,9 @@
 #include <ASyncOTAWebUpdate.h>
 #ifdef ESP32
 #include "SPIFFS.h"
+#else
+extern "C" uint32_t _SPIFFS_start;
+extern "C" uint32_t _SPIFFS_end;
 #endif
 
 #ifndef U_SPIFFS
@@ -71,13 +74,16 @@ void ASyncOTAWebUpdate::handleUpdateUpload(AsyncWebServerRequest *request, const
 	}
 
 	if (!index) {
-		if (_printProgress) Serial.println("update");
+		if (_printProgress) Serial.println(F("update"));
 		contentLen = request->contentLength();
 		// if filename includes spiffs, update the spiffs partition
 		int cmd = U_FLASH;
 		if (filename.indexOf("spiffs") > -1) {
 			cmd = U_SPIFFS;
 			SPIFFS.end();
+#ifdef ESP8266
+			contentLen = ((size_t) &_SPIFFS_end - (size_t) &_SPIFFS_start);
+#endif
 		}
 
 		if (_printProgress) Serial.printf("Loading %s\n", filename.c_str());
