@@ -1,0 +1,13 @@
+{
+  "name": "ASyncOTAWebUpdate",
+  "keywords": "esp8266,espressif32,espressif8266,esp32,OTA,update",
+  "description": "ESP8266 and ESP32 OTA web update that works with ESPAsyncWebServer",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/judge2005/ASyncOTAWebUpdate.git"
+  },
+  "frameworks": "arduino",
+  "platforms": ["espressif8266", "espressif32"],
+  "version": "0.1.0"
+}

@@ -76,9 +76,9 @@ void ASyncOTAWebUpdate::handleUpdateUpload(AsyncWebServerRequest *request, const
 	if (!index) {
 		if (_printProgress) Serial.println(F("update"));
 		contentLen = request->contentLength();
-		// if filename includes spiffs, update the spiffs partition
+		// if filename includes spiffs or littlefs, update the spiffs partition
 		int cmd = U_FLASH;
-		if (filename.indexOf("spiffs") > -1) {
+		if (filename.indexOf("spiffs") > -1 || filename.indexOf("littlefs") > -1) {
 			cmd = U_SPIFFS;
 			SPIFFS.end();
 #ifdef ESP8266
